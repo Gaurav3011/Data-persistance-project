@@ -10,18 +10,21 @@ public class MainManager : MonoBehaviour
     public int LineCount = 6;
     public Rigidbody Ball;
 
+    public Text bestScore;
     public Text ScoreText;
     public GameObject GameOverText;
     
     private bool m_Started = false;
     private int m_Points;
-    
-    private bool m_GameOver = false;
 
-    
+    private bool m_GameOver = false;
+    private string n;
     // Start is called before the first frame update
     void Start()
     {
+        n = MenuManager.instance.Name;
+        Debug.Log(MenuManager.instance.Name);
+        MenuManager.instance.LoadScore();
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
@@ -57,7 +60,7 @@ public class MainManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                SceneManager.LoadScene(1);
             }
         }
     }
@@ -71,6 +74,18 @@ public class MainManager : MonoBehaviour
     public void GameOver()
     {
         m_GameOver = true;
+        if (m_Points>MenuManager.instance.score)
+        {
+            MenuManager.instance.score = m_Points;
+            MenuManager.instance.Name = n;
+            MenuManager.instance.SaveScore();
+            bestScore.text = MenuManager.instance.score + " : "+ MenuManager.instance.Name;
+        }
+        else
+        { 
+            bestScore.text = MenuManager.instance.score + " : " + MenuManager.instance.Name;
+        }
+        bestScore.gameObject.SetActive(true);
         GameOverText.SetActive(true);
     }
 }
